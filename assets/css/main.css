@@ -1,0 +1,33 @@
+@import url('bootstrap.min.css');
+
+.server_log {
+    padding: 20px;
+    z-index: 1000;
+    position: fixed;
+    overflow: scroll;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, .75);
+    color: white;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.server_log .close {
+    position: fixed;
+    right: 30px;
+    top: 30px;
+    color: white;
+    font-size: 2rem;
+    border: 1px solid white;
+    border-radius: 100%;
+    padding: 10px 14px;
+    padding-bottom: 3px;
+}
+
+.server_log pre {
+    color: white;
+    font-size: 1.3rem;
+}

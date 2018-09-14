@@ -1,0 +1,4 @@
+{
+    "posts": "SELECT * FROM posts,categories WHERE posts.category_id = categories.id and posts.title like :search ORDER BY posts.id DESC LIMIT :offset, :limit",
+    "postsCount": "SELECT count(*) FROM posts where posts.title like :search"
+}

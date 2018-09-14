@@ -1,0 +1,9 @@
+{
+    "assets": "assets",
+    "storage": "storage",
+    "images": "storage/images",
+    "databases": "storage/databases",
+    "view": "view",
+    "pages": "view/pages",
+    "templates": "view/layouts"
+}
