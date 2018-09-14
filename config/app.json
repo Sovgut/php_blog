@@ -1,0 +1,9 @@
+{
+    "name": "ITStep Blog",
+    "version": "1.0.0",
+    "language": "ru-RU",
+    "author": "Sovgut Sergey",
+    "debug": true,
+    "postsPerPage": 4,
+    "defaultTemplate": "main"
+}
