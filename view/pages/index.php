@@ -1,16 +1,38 @@
+<?php 
+
+use components\Essentials\Environment;
+
+?>
+
 <div class="container">
+
+    <!-- IF USER USED SEARCH -->
+    <?php if ($this->search !== '') : ?>
+    <h3>Search result:</h3>
+    <?php endif; ?>
+
+    <!-- IF POSTS NOT FOUND -->
+    <?php if (empty($this->posts)) : ?>
+    <p>Posts not found</p>
+    <?php else : ?>
 
     <!-- POSTS -->
     <?php foreach ($this->posts as $post) : ?>
     <div class="card text-center mt-5 mb-5">
         <div class="card-header">
-            <?= $post->title ?> - <small class="text-muted">
-                <?= $post->name ?></small>
+            <a href="<?= Environment::HtmlRoute('post', ['id' => $post->id]) ?>">
+                <?= $post->title ?></a> -
+            <small class="text-muted">
+                <a href="<?= Environment::HtmlRoute('category', ['id' => $post->category_id]) ?>">
+                    <?= $post->name ?></a>
+            </small>
         </div>
         <div class="card-body p-0 pb-3">
-            <img class="img-fluid mb-3"
-                 src="<?= $post->path_img ?>"
-                 alt="<?= $post->title ?>" />
+            <a href="<?= Environment::HtmlRoute('post', ['id' => $post->id]) ?>">
+                <img class="img-fluid mb-3"
+                     src="<?= $post->path_img ?>"
+                     alt="<?= $post->title ?>" />
+            </a>
             <p class="card-text">
                 <?= $post->content ?>
             </p>
@@ -30,23 +52,35 @@
         </div>
     </div>
     <?php endforeach; ?>
+    <?php endif; ?>
 
     <!-- PAGINATION -->
     <nav aria-label="navigation">
-        <ul class="pagination">
+        <ul class="pagination justify-content-center">
+
+            <!-- SHOW BACK BUTTON IF AVAILABLE -->
             <?php if ($this->offset > 0) : ?>
             <li class="page-item"><a class="page-link"
-                   href="/?page=index&offset=<?= $this->offset - $this->perPage ?>&search=<?= $this->search ?>">Previous</a></li>
+                   href="<?= Environment::HtmlRoute('index', ['offset' => $this->offset - $this->perPage, 'search' => $this->search]) ?>">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a></li>
             <?php endif; ?>
+
+            <!-- SHOW PAGES BUTTONS -->
             <?php for ($page = 0; $page < $this->count; $page++) : ?>
-            <li class="page-item <?= $page * $this->perPage == $this->offset ? 'active' : '' ?>"><a
-                   class="page-link"
-                   href="/?page=index&offset=<?= $page * $this->perPage ?>&search=<?= $this->search ?>">
+            <li class="page-item <?= $page * $this->perPage == $this->offset ? 'active' : '' ?>"><a class="page-link"
+                   href="<?= Environment::HtmlRoute('index', ['offset' => $page * $this->perPage, 'search' => $this->search]) ?>">
                     <?= $page + 1 ?></a></li>
             <?php endfor; ?>
+
+            <!-- SHOW NEXT BUTTON IF AVAILABLE -->
             <?php if ($this->offset + $this->perPage < $this->count * $this->perPage) : ?>
             <li class="page-item"><a class="page-link"
-                   href="/?page=index&offset=<?= $this->offset + $this->perPage ?>&search=<?= $this->search ?>">Next</a></li>
+                   href="<?= Environment::HtmlRoute('index', ['offset' => $this->offset + $this->perPage, 'search' => $this->search]) ?>">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a></li>
             <?php endif; ?>
         </ul>
     </nav>

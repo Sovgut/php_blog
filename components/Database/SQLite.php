@@ -9,14 +9,14 @@ use components\Essentials\Environment;
  */
 class SQLite
 {
-    static private function Connect() {
-        $instance = new \PDO('sqlite:'.Environment::Dir()->databases.'blog.sqlite');
+    static private function Connect() : object {
+        $instance = new \PDO('sqlite:'.Environment::Dir()->databases.'SQLite3.sqlite');
         $instance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $instance->beginTransaction();
         return $instance;
     }
 
-    static private function BuildArray($result) {
+    static private function Build($result) : array {
         $objects = [];
         foreach ($result as $row) {
             $objects[] = new class($row) {
@@ -31,28 +31,18 @@ class SQLite
         return $objects;
     }
 
-    static private function BuildOne($result) {
-        return new class($result[0]) {
-            function __construct($data) {
-                foreach ($data as $key => $value) {
-                    $variable = SQLite::Clean($key);
-                    $this->{$variable} = $value;
-                }
-            }
-        };
+    static function Execute(string $query, array $binds = []) : void {
+        $stmt = self::Connect()->prepare($query);
+        $stmt->execute($binds);
     }
 
-    static function Fetch(string $query, array $binds = [])
+    static function Fetch(string $query, array $binds = []) : array
     {
         $stmt = self::Connect()->prepare($query);
         $stmt->execute($binds);
         $result = $stmt->fetchAll();
 
-        if (count($result) > 1) {
-            return self::BuildArray($result);
-        } else {
-            return self::BuildOne($result);
-        }
+        return self::Build($result);
     }
 
     static function Clean(string $variable) : string {
