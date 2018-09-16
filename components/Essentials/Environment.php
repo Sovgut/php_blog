@@ -11,47 +11,76 @@ use controllers\MainController;
  * @author Sovgut Sergey
  */
 class Environment {
-    
-    /**
-     * Read configuration json file and return object with routes
-     */
-    static function Dir() : object {
-        $config = json_decode(file_get_contents((new App())->RootDirectory().'config/appRoutes.json'), true);
 
-        return new class($config) {
-            function __construct(array $config) {
-                $root = (new App())->RootDirectory();
-
-                foreach ($config as $key => $value) {
-                    $this->{$key} = $root.$value.DIRECTORY_SEPARATOR;
+    static public function BuildObjectRecursive(array $array) : object {
+        return new class($array) {
+            function __construct(array $array) {
+                foreach ($array as $key => $value) {
+                    if (gettype($value) === 'array')
+                        $this->{$key} = Environment::BuildObjectRecursive($value);
+                    else {
+                        $this->{$key} = $value;
+                    }
                 }
             }
         };
     }
 
     /**
+     * Read configuration json file and return object with routes
+     */
+    static function Dir() : object {
+        $root   = (new App())->RootDirectory();
+        $config = json_decode(file_get_contents($root.'config/fileSystem.json'), true);
+
+        foreach ($config as $key => &$value) {
+            if (gettype($value) === 'array')
+                foreach ($value as $keySec => &$valueSec) 
+                    $valueSec = $root.$valueSec.DIRECTORY_SEPARATOR;
+            else 
+                $value = $root.$value.DIRECTORY_SEPARATOR;
+        }
+
+        return self::BuildObjectRecursive($config);
+    }
+
+    static private function FetchRoutes() : object {
+        $root   = (new App())->RootDirectory();
+        $config = json_decode(file_get_contents($root.'config/routes.json'), true);
+
+        return self::BuildObjectRecursive($config);
+    }
+
+    static public function FetchDatabase() : object {
+        $root   = (new App())->RootDirectory();
+        $config = json_decode(file_get_contents($root.'config/database.json'), true);
+
+        return self::BuildObjectRecursive($config);
+    }
+
+    /**
      * Read url routes end calls controllers
      */
     static function Route() : void {
-        if (isset(self::Request()->page)) {
-            $pages = scandir(self::Dir()->pages);
+        $request    = self::Request();
+        $controller = new MainController();
 
-            foreach ($pages as $page) {
-                if (!is_dir($page)) {
-                    $statement = str_replace('.php', '', $page);
+        if (isset($request->page)) {
+            $routes = self::FetchRoutes();
 
-                    if (strtolower(self::Request()->page) === $statement) {
-                        $statement .= 'Action';
-                        (new MainController())->$statement();
-                        return;
-                    }
+            foreach ($routes as $route) {
+                $statement = str_replace('Action', '', $route);
+
+                if (strtolower($request->page) === $statement) {
+                    $controller->$route();
+                    return;
                 }
             }
 
-            (new MainController())->errorAction();
+            $controller->errorAction();
             return;
         } else {
-            (new MainController())->indexAction();
+            $controller->indexAction();
             return;
         }
     }
@@ -67,6 +96,7 @@ class Environment {
         $request = [];
         self::FetchRequest($_GET,  $request);
         self::FetchRequest($_POST, $request);
+        self::FetchRequest($_FILES, $request);
 
         return new class($request) {
             function __construct(array $request) {
@@ -77,6 +107,36 @@ class Environment {
                 }
             }
         };
+    }
+
+    static function Redirect(string $url, array $variables = []) : void {
+        
+        $buffer = '';
+        foreach ($variables as $key => $value) {
+            $buffer .= '&'.$key.'='.$value;
+        }
+
+        header('Location: /?page='.$url.$buffer);
+    }
+
+    static function CreateRoute(string $url, array $variables = []) : string {
+
+        $buffer = '';
+        foreach ($variables as $key => $value) {
+            $buffer .= '&'.$key.'='.$value;
+        }
+
+        return '/?page='.$url.$buffer;
+    }
+
+    static function HtmlRoute(string $url, array $variables = []) : void {
+
+        $buffer = '';
+        foreach ($variables as $key => $value) {
+            $buffer .= '&'.$key.'='.$value;
+        }
+
+        echo '/?page='.$url.$buffer;
     }
 
     static function StartLogging() {

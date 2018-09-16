@@ -1,0 +1,7 @@
+{
+    "index": "indexAction",
+    "category": "categoryAction",
+    "post": "postAction",
+    "error": "errorAction",
+    "addPost": "addpostAction"
+}

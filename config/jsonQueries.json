@@ -1,4 +1,9 @@
 {
-    "posts": "SELECT * FROM posts,categories WHERE posts.category_id = categories.id and posts.title like :search ORDER BY posts.id DESC LIMIT :offset, :limit",
-    "postsCount": "SELECT count(*) FROM posts where posts.title like :search"
+    "post": "SELECT * FROM posts, categories WHERE posts.category_id = categories.category_id AND posts.post_id = :post_id LIMIT 1",
+    "posts": "SELECT * FROM posts, categories WHERE posts.category_id = categories.category_id AND posts.post_title LIKE :search ORDER BY posts.post_id DESC LIMIT :offset, :limit",
+    "postsCount": "SELECT count(*) FROM posts WHERE posts.post_title LIKE :search",
+    "categories": "SELECT * FROM categories ORDER BY category_title DESC",
+    "categoryPosts": "SELECT * FROM posts, categories WHERE posts.category_id = categories.category_id AND posts.category_id = :category_id ORDER BY posts.post_id DESC LIMIT :offset, :limit",
+    "categoryPostsCount": "SELECT count(*) FROM posts WHERE category_id = :category_id",
+    "comments": "SELECT * FROM comments WHERE post_id = :post_id ORDER BY comment_id ASC"
 }

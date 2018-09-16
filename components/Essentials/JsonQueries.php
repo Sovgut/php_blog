@@ -12,7 +12,8 @@ use components\Kernel\App;
 class JsonQueries {
 
     static function Queries() : object {
-        $config = json_decode(file_get_contents((new App())->RootDirectory().'config/jsonQueries.json'), true);
+        $root   = (new App())->RootDirectory();
+        $config = json_decode(file_get_contents($root.'config/jsonQueries.json'), true);
 
         return new class($config) {
             function __construct(array $config) {
