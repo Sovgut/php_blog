@@ -1,14 +1,14 @@
 {
     "assets": "assets",
-    "storage": "storage",
-    "images": "storage/images",
+    "storage": "public/storage",
+    "images": "public/storage/images",
     "view": "view",
     "pages": "view/pages",
     "templates": "view/layouts",
     "cache": "cache",
     "cacheImage": "cache/images",
     "public": {
-        "postsImages": "storage/images/posts",
-        "usersImages": "storage/images/users"
+        "postsImages": "public/storage/images/posts",
+        "usersImages": "public/storage/images/users"
     }
 }
