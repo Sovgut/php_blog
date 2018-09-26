@@ -1,6 +1,6 @@
 <?php
 
-namespace components\kernel;
+namespace components\Kernel;
 
 use controllers\MainController;
 use components\Essentials\Environment;
@@ -23,7 +23,7 @@ class App
 
     public function __construct()
     {
-        $this->root = $_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR;
+        $this->root = $_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR;
         $this->FetchConfiguration();
     }
 

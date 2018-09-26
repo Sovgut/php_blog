@@ -1,0 +1,48 @@
+version: '3.1'
+
+services:
+
+  web:
+    build: ./docker/web
+    environment: 
+      - APACHE_RUN_USER=www-data
+    volumes:
+      - ${APP_SOURCE}:${APP_CONTAINER}
+      - ./docker/web/cache/logs:/var/log/apache2
+    ports:
+      - 80:80
+      - 443:443
+    working_dir: ${APP_CONTAINER}
+    links:
+      - db
+
+  db:
+    build: ./docker/db
+    restart: always
+    environment:
+      MYSQL_DATABASE: stories
+      MYSQL_USER: stories
+      MYSQL_PASSWORD: stories
+      MYSQL_ROOT_PASSWORD: root
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./docker/db/cache:/var/lib/mysql
+      #- ./docker/db/import/stories_dump.sql:/docker-entrypoint-initdb.d/stories_dump.sql
+
+  adminer:
+    build: ./docker/adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  #composer:
+  #  build: ./docker/composer
+  #  volumes:
+  #    - ${APP_SOURCE}:${APP_CONTAINER}
+  #  working_dir: ${APP_CONTAINER}
+
+  #node:
+  #  build: ./docker/node
+  #  volumes:
+  #    - ${APP_SOURCE}:${APP_CONTAINER}
+  #  working_dir: ${APP_CONTAINER}

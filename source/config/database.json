@@ -1,7 +1,7 @@
 {
-    "host": "localhost",
+    "host": "db",
     "port": "3306",
     "login": "stories",
-    "pass": "uTyAamMUjST5RI",
+    "pass": "stories",
     "database": "stories"
 }

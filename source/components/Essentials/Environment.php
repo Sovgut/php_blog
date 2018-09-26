@@ -6,18 +6,34 @@ use components\Kernel\App;
 use controllers\MainController;
 
 /**
- * Fetch application path's from json config
+ * Executes parsing of json, queries, url and returns 
+ * as an object with the properties whose name is the 
+ * name of the passed parameter, and the value.
  * 
  * @author Sovgut Sergey
+ * @license MIT
+ * @version 1.0.0
  */
-class Environment {
-
-    static public function BuildObjectRecursive(array $array) : object {
-        return new class($array) {
-            function __construct(array $array) {
-                foreach ($array as $key => $value) {
-                    if (gettype($value) === 'array')
-                        $this->{$key} = Environment::BuildObjectRecursive($value);
+class Environment 
+{
+    /**
+     * Recursively fetches raw data for getting clean object with data
+     * 
+     * @since 0.8.3
+     * @author Sovgut Sergey
+     * @param array $array Raw data like json, assoc array, sql data
+     * @return object Like array, but this is object :)
+     */
+    static public function BuildObjectRecursive ( array $array ) : object 
+    {
+        return new class($array) 
+        {
+            function __construct ( array $array ) 
+            {
+                foreach ( $array as $key => $value ) 
+                {
+                    if ( gettype( $value ) === 'array' )
+                        $this->{$key} = Environment::BuildObjectRecursive( $value );
                     else {
                         $this->{$key} = $value;
                     }

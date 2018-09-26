@@ -50,3 +50,12 @@ Temporary Items
 
 # Project cache
 cache/images/*
+
+# Project dependies
+node_modules
+vendor
+
+# Docker cache
+docker/db/cache/*
+docker/composer/cache/*
+docker/web/cache/*
